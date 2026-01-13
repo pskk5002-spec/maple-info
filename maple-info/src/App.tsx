@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink} from 'react-router-dom';
 import axios from 'axios';
 import CharacterSearchPage from './components/CharacterSearchPage';
 import './App.css';
 import Starforce from './components/Calculator';
 import BossPettern from './components/BossPettern';
+import Calculator from './components/Calculator';
 
 function App() {
   // 전역 데이터 상태
@@ -12,6 +13,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
+
 
   // 날짜 계산 로직
   const getQueryDate = () => {
@@ -62,6 +65,15 @@ function App() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // 사이드바 서브메뉴 핸들러
+  const handleCalcMenuClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if(window.innerWidth <= 768){
+      setIsSubmenuOpen(!isSubmenuOpen);
+    }
+  };
+
 
   return (
     <BrowserRouter>
@@ -89,9 +101,22 @@ function App() {
               <span className = "search-hint">◀ 검색!</span>}
             </NavLink>
             <hr />
-            <NavLink to="/calculator" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-              {isSidebarOpen ? '기대값 계산기' : '📟'}
-            </NavLink>
+            <div className = {`menu-wrapper ${isSubmenuOpen ? 'open' : ''}`}>
+              <NavLink 
+                to="/calculator" 
+                className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}
+                onClick={handleCalcMenuClick} // 클릭해도 페이지 이동 방지
+                style={{ cursor: 'default' }}
+              >
+                <span>{isSidebarOpen ? '기대값 계산기' : '📟'}</span>
+                {window.innerWidth <= 768 && <span>{isSubmenuOpen ? '▲' : '▼'}</span>}
+              </NavLink>
+              <div className = "submenu">
+                <NavLink to = "/calculator/starforce" className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>스타포스</NavLink>
+                <NavLink to = "/calculator/cube" className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>큐브</NavLink>
+                <NavLink to = "/calculator/add-option" className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>추가옵션</NavLink>
+              </div>
+            </div>
             <NavLink to="/bossfettern" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
               {isSidebarOpen ? '보스 패턴 공략' : '🗡️'}
             </NavLink>
@@ -109,7 +134,7 @@ function App() {
               />
             } />
             <Route path="/calculator" element={
-              <Starforce />
+              <Calculator />
             } />
             <Route path="/bossfettern" element={
               <BossPettern />
