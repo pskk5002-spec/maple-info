@@ -1,0 +1,103 @@
+.equipment-window {
+  width: 320px;
+  background-color: gainsboro;
+  border: 1px solid #e1e4e8;
+  border-radius: 16px;
+  padding: 15px;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2); /* 부드러운 그림자 */
+  margin: 20px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  position: relative;
+  padding-bottom: 50px; /* 프리셋 버튼 공간 */
+}
+
+/* 기본 슬롯 디자인 */
+.slot {
+  width: 52px;
+  height: 52px;
+  background-color: #f1f3f5; /* 아주 연한 회색 */
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+/* 아이템이 있을 때의 슬롯 */
+.slot:not(.empty) {
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* 빈 슬롯: 점선 없이 그냥 깔끔한 배경 */
+.slot.empty {
+  background-color: #f8f9fa; 
+  border: none; /* 선을 아예 제거 */
+}
+
+.item-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.slot.레전드리 {
+  border: 2px solid #51cf66;
+  background-color: #ebfbee;
+}
+
+.slot.유니크 {
+  border: 2px solid #fcc419;
+  background-color: #fff9db;
+}
+
+.slot.에픽 {
+  border: 2px solid #845ef7;
+  background-color: #f3f0ff;
+}
+
+.slot.레어 {
+  border: 2px solid #339af0;
+  background-color: #e7f5ff;
+}
+
+
+/* 프리셋 버튼 디자인 (우측 하단 정렬) */
+.preset-controls {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: 6px;
+}
+
+.preset-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dee2e6;
+  background-color: #ffffff;
+  color: #495057;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.preset-btn:hover {
+  background-color: #f8f9fa;
+}
+
+.preset-btn.active {
+  background-color: #ff9100;
+  color: white;
+  border-color: #ff9100;
+  box-shadow: 0 4px 10px rgba(255, 145, 0, 0.3);
+}

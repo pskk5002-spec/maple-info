@@ -1,0 +1,170 @@
+.stats-container {
+  width: 320px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+  margin: 20px;
+}
+
+.combat-power-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff9f0;
+  border-radius: 12px;
+}
+
+.combat-power-box .label {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.combat-power-box .value.orange {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ff9100;
+}
+
+.main-stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  color: #495057;
+}
+
+.stat-row.highlight {
+  font-weight: bold;
+  color: #212529;
+}
+
+.stat-row .value {
+  font-family: 'Pretendard', sans-serif;
+  color: #212529;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #f1f3f5;
+  margin: 8px 0;
+}
+
+/* 어빌리티 섹션 전체 */
+.ability-section {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  position: relative;
+}
+
+.ability-row {
+  margin-bottom: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.ability-row.레전드리 {
+  background: linear-gradient(90deg, #f0fff4 0%, #ffffff 100%);
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.ability-row.유니크 {
+  background: linear-gradient(90deg, #fffbeb 0%, #ffffff 100%);
+  border-color: #fef3c7;
+  color: #92400e;
+}
+
+.ability-row.에픽 {
+  background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 100%);
+  border-color: #ddd6fe;
+  color: #5b21b6;
+}
+
+.ability-row.레어 {
+  background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%);
+  border-color: #dbeafe;
+  color: #1e40af;
+}
+
+.ability-dot {
+  font-size: 8px;
+  opacity: 0.6;
+}
+
+.ability-text {
+  font-weight: 500;
+}
+
+.grade-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.grade-badge.legendary { background: #51cf66; color: white; }
+.grade-badge.unique { background: #fcc419; color: white; }
+
+.ability-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.ability-list {
+  font-size: 13px;
+  color: #495057;
+  line-height: 1.6;
+}
+
+/* 우측 하단 프리셋 버튼 그룹 */
+.ability-presets {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.preset-small-btn {
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  border: 1px solid #dee2e6;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.preset-small-btn.active {
+  background-color: #339af0;
+  color: white;
+  border-color: #339af0;
+}
+
+.stat-current-preset {
+  display: flex;
+  font-size: 15px;
+  color: #495057;
+}

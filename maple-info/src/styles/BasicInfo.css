@@ -1,0 +1,93 @@
+/* 캐릭터 카드 전체 박스 */
+.basic-info-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  width: 100%; /* 부모인 .section-card에 맞게 꽉 채움 */
+  max-width: 450px; /* 너무 커지지 않게 제한 */
+  overflow: hidden; 
+}
+
+/* 캐릭터 이미지 배경 (약간의 입체감) */
+.image-wrapper {
+  width: 100%;
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  padding: 20px 0; /* padding을 적절히 조절 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  min-height: 350px; /* 이미지가 들어갈 충분한 높이 확보 */
+}
+
+.character-img {
+  transform: scale(3.0);
+  height: auto;
+  /* 메이플 특유의 도트 느낌을 살리면서 키우는 속성 */
+  image-rendering: crisp-edges;
+  image-rendering: pixelated; 
+  /* 붕 뜨는 현상을 막기 위해 transform 제거 */
+  display: block;
+}
+
+
+/* 텍스트 정보 영역 */
+.info-content {
+  padding: 30px; /* 내부 여백을 늘려 컴포넌트를 크게 보이게 함 */
+}
+
+/* 서버 이름 배지 */
+.world-badge {
+  display: inline-block;
+  background-color: #333;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.char-name {
+  font-size: 32px; /* 이름 크기 상향 */
+  font-weight: 800;
+  margin: 10px 0;
+  color: #1a1a1a;
+}
+
+.detail-row {
+  font-size: 18px; /* 텍스트 크기 상향 */
+  margin-bottom: 20px;
+}
+.level-text {
+  font-weight: bold;
+  color: #ff9100; /* 오렌지색 포인트 */
+}
+
+.divider {
+  margin: 0 8px;
+  color: #ddd;
+}
+
+/* 길드 정보 박스 */
+.guild-tag {
+  background-color: #f1f3f5;
+  padding: 8px 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.guild-label {
+  color: #888;
+}
+
+.guild-name {
+  color: #444;
+  font-weight: 600;
+}

@@ -1,0 +1,115 @@
+.item-tooltip {
+  position: fixed;
+  width: 280px;
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid #a3a3a3;
+  border-radius: 4px;
+  color: white;
+  padding: 12px;
+  z-index: 10000;
+  pointer-events: none;
+  font-family: 'Malgun Gothic', sans-serif;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+}
+
+/* 스타포스 디자인 */
+.star {
+  color: #ffcc00;
+  font-size: 15px;
+  margin: 0 1px;
+}
+
+/* 아이템 이름 색상 (인게임 기준) */
+.item-name {
+  text-align: center;
+  font-weight: bold;
+  font-size: 17px;
+}
+.rare { color: #66ffff; }
+.epic { color: #9966ff; }
+.unique { color: #ffcc00; }
+.legendary { color: #ccff00; }
+
+.item-grade-text {
+  text-align: center;
+  font-size: 11px;
+  color: #ddd;
+  margin-bottom: 5px;
+}
+
+.dotted-line {
+  border: none;
+  border-top: 1px dotted #777;
+  margin: 8px 0;
+}
+
+/* 이미지 및 기본 정보 */
+.item-main-info {
+  display: flex;
+  gap: 12px;
+}
+.item-img-box {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.item-type-info p {
+  margin: 2px 0;
+  font-size: 12px;
+  color: #efefef;
+}
+
+/* 잠재능력 스타일 */
+.potential-section {
+  margin-top: 8px;
+}
+.option-title {
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.potential-section p {
+  margin: 2px 0;
+  font-size: 12px;
+  padding-left: 5px;
+}
+
+/* 에디셔널 잠재능력은 배경색이 살짝 다름 */
+.potential-section.additional {
+  background: rgba(0, 255, 255, 0.05);
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.soul-section p{
+    font-size: 13px;
+    color: yellow;
+}
+
+/* 기본 수치(흰색)는 생략 가능 */
+.stat-base { color: #ffffff; }
+/* 추가 옵션 (연두색) */
+.stat-add { color: #ccff00; }
+/* 업그레이드/작 (파란색) */
+.stat-etc { color: #6699ff; }
+/* 스타포스 (노란색) */
+.stat-star { color: #ffcc00; }
+
+.detail-parentheses { color: #ffffff; margin-left: 4px; }
+
+/*모바일 환경 (툴팁 fixed, 바깥쪽 클릭시 닫힘)*/
+@media (max-width: 768px){
+  .item-tooltip {
+    /* 1. 클릭한 위치를 무시하고 화면 하단에 고정 */
+    position: fixed !important; 
+    top: 10% !important;    /* 위쪽 위치 무시 */
+    left: auto !important;      /* 왼쪽 여백 제거 */
+    bottom: auto !important;    /* 바닥에 딱 붙임 */
+    right: auto;
+    
+  }
+}
