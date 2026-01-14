@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import '../styles/Equipment.css';
 import ItemTooltip from './ItemTooltip';
 
-function Equipment({ items1, items2, items3 }: any) {
+function Equipment({ items1, items2, items3, onItemClick }: any) {
   //툴팁 상태
   const [hoveredItem, setHoveredItem] = useState<any>(null);
   const [mousePos, setMousePos] = useState({x: 0, y: 0});
@@ -72,6 +72,14 @@ function Equipment({ items1, items2, items3 }: any) {
               className={`slot ${!item ? 'empty' : ''} ${item?.potential_option_grade || ''}`}
               style={{ visibility: slotName === 'null' ? 'hidden' : 'visible' }}
               //마우스 이벤트 연결
+              onClick={() =>
+                item && onItemClick({
+                  level: Number(item.item_base_option?.base_equipment_level ?? 0),
+                  star: Number(item.starforce ?? 0),
+                  price: Number(item.item_price ?? 0),
+                  name: item.item_name, // (선택)
+                })
+              }
               onMouseEnter = {(e) => item && handleMouseEnter(item, e)}
               onMouseMove = {(e) => item && handleMouseMove(e)}
               onMouseLeave = {handleMouseLeave}

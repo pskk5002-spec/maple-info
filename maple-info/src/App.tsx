@@ -3,9 +3,8 @@ import { BrowserRouter, Routes, Route, NavLink} from 'react-router-dom';
 import axios from 'axios';
 import CharacterSearchPage from './components/CharacterSearchPage';
 import './App.css';
-import Starforce from './components/Calculator';
+import Starforce from './components/Starforce';
 import BossPettern from './components/BossPettern';
-import Calculator from './components/Calculator';
 
 function App() {
   // 전역 데이터 상태
@@ -133,8 +132,8 @@ function App() {
                 onSearch={searchCharacter} 
               />
             } />
-            <Route path="/calculator" element={
-              <Calculator />
+            <Route path="/calculator/starforce" element={
+              <Starforce data = {data}/>
             } />
             <Route path="/bossfettern" element={
               <BossPettern />
