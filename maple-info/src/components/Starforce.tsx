@@ -35,11 +35,6 @@ const Starforce: React.FC<StarforceProps> = ({ data }) => {
 
 
   const handleCalculate = (inputSettings: StarforceSettings) => {
-    if (!selectedItem) {
-      alert('장비 선택이 필요합니다.');
-      return;
-    }
-
     setLoading(true);
     setCalculationResult(null);
 
@@ -63,17 +58,27 @@ const Starforce: React.FC<StarforceProps> = ({ data }) => {
     };
   };
 
+  if (!data) {
+  return (
+    <div className="main-container">
+      <div className='error-userguide'>
+        메뉴 [캐릭터 정보]에서 <br />먼저 닉네임을 검색해주세요!
+      </div>
+    </div>
+  );
+}
+
   return (
     <div className="main-container">
       <h1 className="main-title">스타포스 기대값 계산기</h1>
 
       {loading && (
         <div style={{ textAlign: 'center', color: '#fff' }}>
-          계산 중입니다… (10만 회 시뮬레이션)
+          계산 중입니다… (3만 회 시뮬레이션)
         </div>
       )}
 
-      <div className="result-container" style={{ alignItems: 'stretch' }}>
+      <div className="result-container">
         <div className="section-card" style={{ flex: 1 }}>
           <Equipment
             items1={data.items.item_equipment_preset_1}
@@ -90,7 +95,7 @@ const Starforce: React.FC<StarforceProps> = ({ data }) => {
           />
         </div>
 
-        <div className="section-card" style={{ flex: 1 }}>
+        <div className="section-card" style={{ flex: 1, minHeight: 700}}>
           <StarforceResult result={calculationResult} />
         </div>
       </div>

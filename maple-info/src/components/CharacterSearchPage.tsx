@@ -1,11 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Equipment from '../components/Equipment.tsx';
 import BasicInfo from '../components/BasicInfo.tsx';
 import Stats from '../components/Stats.tsx';
+import { useNavigate } from 'react-router-dom';
 
 // Props 타입 정의 (App에서 받아올 항목들)
-function CharacterSearchPage({ data, loading, selectedDate, onSearch }: any) {
+function CharacterSearchPage({ data, loading, selectedDate }: any) {
   const [characterName, setCharacterName] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    if(!characterName.trim()) return alert("정보를 불러올 수 없습니다.");
+
+    //URL 변경
+    navigate(`/?name=${encodeURIComponent(characterName)}`);
+  }
+
+  useEffect(() => {
+    if (data && !new URLSearchParams(location.search).get('name')) {
+      navigate(`/?name=${data.basic.character_name}`, { replace: true });
+    }
+  }, []);
 
   return (
     <div className="main-container">
@@ -16,10 +31,10 @@ function CharacterSearchPage({ data, loading, selectedDate, onSearch }: any) {
           className="search-input" 
           value={characterName} 
           onChange={(e) => setCharacterName(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && onSearch(characterName)} // 부모의 함수 실행
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()} // 부모의 함수 실행
           placeholder='캐릭터 닉네임 입력'
         />
-        <button className="search-button" onClick={() => onSearch(characterName)} disabled={loading}>
+        <button className="search-button" onClick={handleSearch} disabled={loading}>
           {loading ? '검색 중...' : '검색'}
         </button>
         

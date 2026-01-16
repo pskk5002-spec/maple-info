@@ -101,3 +101,10 @@
   border-color: #ff9100;
   box-shadow: 0 4px 10px rgba(255, 145, 0, 0.3);
 }
+
+@media (max-width: 768px){
+  .slot {
+  width: 46px;
+  height: 46px;
+}
+}

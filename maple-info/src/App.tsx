@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { BrowserRouter, Routes, Route, NavLink} from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { Routes, Route, NavLink, useLocation} from 'react-router-dom';
 import axios from 'axios';
 import CharacterSearchPage from './components/CharacterSearchPage';
 import './App.css';
@@ -13,6 +13,9 @@ function App() {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
+  const location = useLocation();
+
+  const lastSearchedName = useRef<string>('');
 
 
   // 날짜 계산 로직
@@ -28,7 +31,7 @@ function App() {
 
   // 공통 검색 함수
   const searchCharacter = async (characterName: string) => {
-    if (!characterName) return alert("닉네임을 입력해 주세요.");
+    if (loading || lastSearchedName.current === characterName) return alert("정보를 불러올 수 없습니다.");
     setLoading(true);
     const API_KEY = "test_f423d61cc0c4628d1aa3d764f91123979613bb1d1bd77ce6ff5e9cf3261893eaefe8d04e6d233bd35cf2fabdeb93fb0d";
     const targetDate = getQueryDate();
@@ -45,19 +48,64 @@ function App() {
         axios.get(`/api/maplestory/v1/character/ability?ocid=${ocid}&date=${targetDate}`, { headers: { 'x-nxopen-api-key': API_KEY } }),
       ]);
 
-      setData({
+      const resultData = {
         basic: basicRes.data,
         stats: statRes.data,
         items: itemRes.data,
         ability: abilityRes.data,
-      });
+      };
+
+      setData(resultData);
+
+      //캐시 저장
+      localStorage.setItem(
+        `maple-${characterName}`,
+        JSON.stringify({
+          date: targetDate,
+          data: resultData,
+        })
+      );
+
+      lastSearchedName.current = characterName;
     } catch (e: any) {
       console.error(e);
+      if (e.response?.status === 429) {
+        const cached = localStorage.getItem(`maple-${characterName}`);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          setSelectedDate(parsed.date);
+          setData(parsed.data);
+          alert("API 호출 제한으로 저장된 데이터를 표시합니다.");
+          return;
+        }
+      }
+
       alert("데이터를 가져오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(()=>{
+    const params = new URLSearchParams(location.search);
+    const characterNameFromUrl = params.get('name');
+
+    if(!characterNameFromUrl) return;
+
+    //캐시 우선 조회
+    const cached = localStorage.getItem(`maple-${characterNameFromUrl}`);
+
+    if(cached){
+      const parsed = JSON.parse(cached);
+      setSelectedDate(parsed.date);
+      setData(parsed.data);
+      lastSearchedName.current = characterNameFromUrl;
+      return;
+    }
+
+    searchCharacter(characterNameFromUrl);
+  }, [location.search]);
+
 
   // 사이드바 토글 함수
   const toggleSidebar = () => {
@@ -75,8 +123,6 @@ function App() {
 
 
   return (
-    <BrowserRouter>
-      {/* 상태에 따라 클래스 추가 */}
       <div className={`app-layout ${!isSidebarOpen ? 'sidebar-closed' : ''}`}>
         {/* 모바일에서만 보이는 버튼 추가 */}
         <button className = "mobile-fab" onClick = {toggleSidebar}>
@@ -85,14 +131,20 @@ function App() {
 
         <nav className="sidebar">
           <div className="sidebar-header">
-            <div className="sidebar-logo">{isSidebarOpen ? 'MAPLE INFO' : 'M'}</div>
+            <NavLink
+                to={`/${location.search}`}
+                className="sidebar-logo"
+                onClick={() => window.innerWidth <= 768 && setIsSidebarOpen(false)}
+              >
+                {isSidebarOpen ? 'MAPLE INFO' : 'M'}
+              </NavLink>
             <button className="toggle-btn" onClick={toggleSidebar}>
               {isSidebarOpen ? '◀' : '▶'}
             </button>
           </div>
           
           <div className="sidebar-menu">
-            <NavLink to="/" 
+            <NavLink to={`/${location.search}`} 
             className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}
             onClick = {() => window.innerWidth <= 768 && setIsSidebarOpen(false)}
             >
@@ -111,12 +163,12 @@ function App() {
                 {window.innerWidth <= 768 && <span>{isSubmenuOpen ? '▲' : '▼'}</span>}
               </NavLink>
               <div className = "submenu">
-                <NavLink to = "/calculator/starforce" className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>스타포스</NavLink>
-                <NavLink to = "/calculator/cube" className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>큐브</NavLink>
-                <NavLink to = "/calculator/add-option" className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>추가옵션</NavLink>
+                <NavLink to = {`/calculator/starforce${location.search}`} className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>스타포스</NavLink>
+                <NavLink to = {`/calculator/cube${location.search}`} className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>큐브</NavLink>
+                <NavLink to = {`/calculator/add-option${location.search}`} className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>추가옵션</NavLink>
               </div>
             </div>
-            <NavLink to="/bossfettern" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+            <NavLink to={`/bossfettern${location.search}`} className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
               {isSidebarOpen ? '보스 패턴 공략' : '🗡️'}
             </NavLink>
           </div>
@@ -129,7 +181,6 @@ function App() {
                 data={data} 
                 loading={loading} 
                 selectedDate={selectedDate} 
-                onSearch={searchCharacter} 
               />
             } />
             <Route path="/calculator/starforce" element={
@@ -141,7 +192,6 @@ function App() {
           </Routes>
         </div>
       </div>
-    </BrowserRouter>
   );
 }
 

@@ -92,7 +92,6 @@ self.onmessage = (e) => {
         totalCost += spareCost;
         star = 12; // 파괴 시 12성 복원
       } 
-      // [수정] 실패(else) 시 star-- 로직을 완전히 삭제하여 하락이 없도록 함
     }
 
     sumCost += totalCost;

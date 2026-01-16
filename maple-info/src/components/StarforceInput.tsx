@@ -7,10 +7,12 @@ interface StarforceInputProps {
 
 const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalculate }) => {
   const [targetStar, setTargetStar] = useState(22);
-  const [itemCost, setItemCost] = useState(0);
+  const [itemCost, setItemCost] = useState<string>('');
   const [event, setEvent] = useState('none');
   const [itemLevel, setItemLevel] = useState(160);
   const [currentStar, setCurrentStar] = useState(0);
+
+  const [formatMesoOut, setFormatMesoOut] = useState("");
 
   useEffect(() => {
     if (!selectedItem) return;
@@ -19,6 +21,11 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
     setCurrentStar(selectedItem.star);
     setItemCost(selectedItem.price);
   }, [selectedItem]);
+
+  useEffect(()=>{
+    setFormatMesoOut(formatMeso(Number(itemCost) || 0));
+  }
+  ,[itemCost])
 
 
 
@@ -45,11 +52,29 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
       itemLevel,
       currentStar,
       targetStar,
-      itemCost,
+      itemCost: Number(itemCost) || 0,
       event,
       stepSettings,
     });
   };
+
+  const formatMeso = (meso: number) => {
+  if (meso === 0) return '0';
+  
+  // 단위별 계산
+  const trillion = Math.floor(meso / 1000000000000);
+  const billion = Math.floor((meso % 1000000000000) / 100000000);
+  const tenThousand = Math.floor((meso % 100000000) / 10000);
+  const rest = Math.floor(meso % 10000); // 1만 미만 단위
+  
+  let result = '';
+  if (trillion > 0) result += `${trillion}조 `;
+  if (billion > 0) result += `${billion}억 `;
+  if (tenThousand > 0) result += `${tenThousand}만 `;
+  if (rest > 0) result += `${rest} `; // 천 단위 콤마 추가
+  
+  return result.trim();
+};
 
   return (
     <div className="input-form-wrapper">
@@ -57,35 +82,56 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
 
       {/* 목표 및 매물 비용 */}
       <div className="input-group">
-        <label>목표 및 매물 비용</label>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <input type="number" className="sf-input" value={targetStar} onChange={(e) => setTargetStar(Number(e.target.value))} />
-          <input type="number" className="sf-input" placeholder="매물 비용(메소)" onChange={(e) => setItemCost(Number(e.target.value))} />
+        <div className="input-between">
+          <div className='input-lable'>
+            목표 스타포스
+            <input 
+              type="number" 
+              className="sf-input" 
+              value={targetStar} 
+              onChange={(e) => setTargetStar(Number(e.target.value))} 
+            />
+          </div>
+          <div className='input-lable'>
+            매물 비용(메소)
+            <input 
+              type="number" 
+              className="sf-input" 
+              placeholder="매물 비용" 
+              value={itemCost}
+              onChange={(e) => setItemCost(e.target.value)} 
+            />
+            <div className='input-formatmeso'>{formatMesoOut || ' '}</div>
+          </div>
         </div>
-        <label>
-          아이템 레벨
-          <input
-            type="number"
-            value={itemLevel}
-            onChange={e => setItemLevel(Number(e.target.value))}
-          />
-        </label>
+        <div className = "input-between">
+          <div className='input-lable'>
+            아이템 레벨
+            <input
+              type="number"
+              className="sf-input"
+              value={itemLevel}
+              onChange={e => setItemLevel(Number(e.target.value))}
+            />
+          </div>
 
-        <label>
-          현재 스타포스
-          <input
-            type="number"
-            value={currentStar}
-            min={0}
-            max={24}
-            onChange={e => setCurrentStar(Number(e.target.value))}
-          />
-        </label>
+          <div className='input-lable'>
+            현재 스타포스
+            <input
+              type="number"
+              className="sf-input"
+              value={currentStar}
+              min={0}
+              max={24}
+              onChange={e => setCurrentStar(Number(e.target.value))}
+            />
+          </div>
+        </div>
       </div>
 
       {/* 이벤트 선택 */}
       <div className="input-group">
-        <label>이벤트 선택</label>
+        <div className='input-lable' style={ {fontSize: '20px'}}>썬데이 메이플</div>
         <div className="event-check-group">
           {[
             { id: '30%', label: '비용 30% 할인' },
@@ -108,7 +154,7 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
             <thead>
               <tr>
                 <th>구간</th>
-                <th>스캐</th>
+                <th>스타캐치</th>
                 <th>파방</th>
               </tr>
             </thead>
@@ -136,7 +182,7 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
         </div>
       </div>
 
-      <button className="calc-submit-btn" onClick={handleSubmit} disabled={!selectedItem}>
+      <button className="calc-submit-btn" onClick={handleSubmit}>
         기대값 계산 시작
       </button>
     </div>

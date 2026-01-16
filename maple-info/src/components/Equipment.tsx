@@ -58,6 +58,7 @@ function Equipment({ items1, items2, items3, onItemClick }: any) {
     setHoveredItem(null);
   };
 
+
   return (
     <div className="equipment-window">
       <div className="grid-container">

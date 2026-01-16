@@ -10,7 +10,10 @@
 /* 입력창 컨테이너 */
 .input-form-wrapper {
   padding: 24px;
+  box-sizing: border-box;
   color: #333;
+  width: 380px;
+  min-width: 380px;
 }
 
 .input-header {
@@ -40,15 +43,54 @@
   margin-bottom: 18px;
 }
 
-.input-group label {
+.input-between{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  width: 100%;
+  gap: 10px;
+}
+
+.input-lable{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 20px;
+  position: relative;
+  font-weight: 700;
+  color: #444;
+  text-align: left;
+}
+
+.input-lable input {
+  margin-top: 10px; /* 원하는 만큼 수치 조절 */
+  display: block;    /* 확실하게 아래로 떨어지게 함 */
+}
+
+.input-group label{
   display: block;
   margin-bottom: 8px;
   font-weight: 700;
   color: #444;
 }
 
+.input-formatmeso{
+  text-align: right;
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+
+  height: 14px;
+  line-height: 14px;
+  
+  margin-right: 17px;
+}
+
+
+
 .sf-input, .sf-select {
-  width: 100%;
+  width: 120px;
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ddd;
@@ -59,29 +101,6 @@
 .sf-input:focus {
   border-color: #ff9100;
   outline: none;
-}
-
-/* 체크박스 그룹 */
-.checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 20px 0;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.checkbox-label input {
-  width: 18px;
-  height: 18px;
-  margin-right: 10px;
-  accent-color: #ff9100; /* 체크박스 포인트 컬러 */
 }
 
 /* 계산 버튼 */
@@ -111,7 +130,6 @@
 .detail-setting-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 15px 0;
   font-size: 0.85rem;
   text-align: center;
 }
@@ -151,13 +169,137 @@
   background: #fff;
 }
 
-.result-wrapper { padding: 20px; color: #fff; }
-.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-.summary-card { background: #2a2a2a; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; }
-.summary-label { font-size: 0.9rem; color: #aaa; margin-bottom: 5px; }
-.summary-value { font-size: 1.2rem; font-weight: bold; }
-.highlight { color: #ffcc00; }
+.result-wrapper { 
+  padding: 20px; 
+  color: black;
+  box-sizing: border-box;
+}
+
+.result-placeholder p{
+  color: #888;
+  text-align: center;
+  margin-top: 200px;
+}
+
+.summary-set {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin: 2px;
+}
+.summary-card { 
+  font-size: 1rem; 
+  font-weight: bold; 
+  color: white; 
+  background-color: #ff9100; 
+  margin-bottom: 5px;
+  padding: 10px; 
+  border-radius: 8px; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+ }
+
+.summary-value { 
+  font-size: 1.2rem; 
+  padding: 5px;
+  margin: 1px;
+  font-weight: bold; 
+}
+
+.highlight { color: #391766; }
 .percentile-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 .percentile-table th, .percentile-table td { padding: 10px; border-bottom: 1px solid #444; text-align: left; }
 .percentile-table th { color: #888; font-size: 0.85rem; }
 .danger-text { color: #ff4d4d; font-weight: bold; }
+
+.chart-section{
+  width: 350px;
+  height: 300px; 
+  margin: 30px auto;
+}
+
+/* 체크박스 컨테이너 (정렬을 위해 td 안에서 사용) */
+td input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-radius: 4px; /* 살짝 둥근 사각형 */
+  background-color: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 체크되었을 때 스타일 */
+td input[type="checkbox"]:checked {
+  background-color: #ff9100; /* 메이플 오렌지색 */
+  border-color: #ff9100;
+}
+
+/* 체크 표시 (V자 모양) 가상 요소 */
+td input[type="checkbox"]:checked::after {
+  content: '✔';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+}
+
+/* 호버 시 효과 */
+td input[type="checkbox"]:hover {
+  border-color: #ff9100;
+  box-shadow: 0 0 5px rgba(255, 145, 0, 0.3);
+}
+
+/* 파괴방지 비활성화 텍스트 스타일 */
+.disabled-text {
+  color: #ccc;
+  font-size: 14px;
+}
+
+/* 테이블 레이아웃 정렬 보정 */
+tr td {
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.star-label {
+  font-weight: bold;
+  color: #555;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .setting-scroll-area {
+    max-width: 300;
+    overflow-x: auto;
+  }
+  .starforce-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .input-form-wrapper,
+  .result-wrapper {
+    width: 100%;
+    min-width: 0;
+  } 
+
+  .sf-input, .sf-select{
+    width: 100px;
+  }
+
+  .chart-section{
+  width: 300px;
+  height: 150px; 
+  margin: 20px auto;
+}
+}
