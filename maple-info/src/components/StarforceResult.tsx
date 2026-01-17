@@ -24,6 +24,8 @@ interface StarforceResultProps {
     };
     graphData: number[];
   } | null;
+  
+  mode: string;
 }
 
 // 메소 단위를 한국어 읽기 방식으로 변환 (조, 억, 만)
@@ -41,7 +43,7 @@ const formatMeso = (meso: number) => {
   return result.trim();
 };
 
-const StarforceResult: React.FC<StarforceResultProps> = ({ result }) => {
+const StarforceResult: React.FC<StarforceResultProps> = ({ result, mode }) => {
 
   if (!result) {
     return (
