@@ -12,7 +12,11 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
   const [itemLevel, setItemLevel] = useState(160);
   const [currentStar, setCurrentStar] = useState(0);
 
+  //메소 포맷, useEffect 활용하여 실시간으로 포맷 제공
   const [formatMesoOut, setFormatMesoOut] = useState("");
+
+  //모드 상태
+  const [calcMethod, setCalcMethod] = useState<string>('');
 
   useEffect(() => {
     if (!selectedItem) return;
@@ -32,7 +36,7 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
   // 12성부터 21성까지 상세 설정 관리
   const [stepSettings, setStepSettings] = useState<{ [key: number]: { catch: boolean; guard: boolean } }>(
     Object.fromEntries(
-      Array.from({ length: 10 }, (_, i) => [i + 12, { catch: true, guard: false }])
+      Array.from({ length: 18 }, (_, i) => [i + 12, { catch: true, guard: false }])
     )
   );
 
@@ -54,6 +58,7 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
       targetStar,
       itemCost: Number(itemCost) || 0,
       event,
+      mode: calcMethod,
       stepSettings,
     });
   };
@@ -89,6 +94,8 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
               type="number" 
               className="sf-input" 
               value={targetStar} 
+              min = {0}
+              max = {30}
               onChange={(e) => setTargetStar(Number(e.target.value))} 
             />
           </div>
@@ -99,6 +106,8 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
               className="sf-input" 
               placeholder="매물 비용" 
               value={itemCost}
+              step={10000000}
+              min = {0}
               onChange={(e) => setItemCost(e.target.value)} 
             />
             <div className='input-formatmeso'>{formatMesoOut || ' '}</div>
@@ -111,6 +120,9 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
               type="number"
               className="sf-input"
               value={itemLevel}
+              step={5}
+              max = {300}
+              min = {0}
               onChange={e => setItemLevel(Number(e.target.value))}
             />
           </div>
@@ -146,6 +158,18 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
         </div>
       </div>
 
+      {/* 모드 선택 (시뮬, 마르코프 체인) */}
+      <div className='input-group'>
+        <div className='input-lable' style={ {fontSize: '18px'}}>모드 선택</div>
+        <select 
+        className='sf-select'
+        value={calcMethod}
+        onChange={(e)=>setCalcMethod(e.target.value)}>
+          <option value = "simulation">시뮬레이션</option>
+          <option value = "markov">마르코프 체인</option>
+        </select>
+      </div>
+
       {/* 구간별 상세 설정 테이블 */}
       <div className="input-group">
         <label>구간별 상세 설정</label>
@@ -159,19 +183,28 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
               </tr>
             </thead>
             <tbody>
-              {Object.keys(stepSettings).map((star) => {
-                const s = Number(star);
-                if (s >= targetStar) return null;
+              {/* 12성부터 (targetStar - 1)성까지의 행을 생성 */}
+              {Array.from({ length: Math.max(0, targetStar - 12) }, (_, i) => i + 12).map((s) => {
+                // stepSettings[s]가 없을 경우를 대비해 초기값 제공 (방어 코드)
+                const settings = stepSettings[s] || { catch: true, guard: false };
+                
                 return (
                   <tr key={s}>
                     <td className="star-label">{s}★ ➔ {s + 1}★</td>
                     <td>
-                      <input type="checkbox" checked={stepSettings[s].catch} onChange={() => toggleSetting(s, 'catch')} />
+                      <input 
+                        type="checkbox" 
+                        checked={settings.catch} 
+                        onChange={() => toggleSetting(s, 'catch')} 
+                      />
                     </td>
                     <td>
-                      {/* 파방 가능 구간: 15, 16, 17성 (정정된 규칙 반영) */}
                       {[15, 16, 17].includes(s) ? (
-                        <input type="checkbox" checked={stepSettings[s].guard} onChange={() => toggleSetting(s, 'guard')} />
+                        <input 
+                          type="checkbox" 
+                          checked={settings.guard} 
+                          onChange={() => toggleSetting(s, 'guard')} 
+                        />
                       ) : <span className="disabled-text">-</span>}
                     </td>
                   </tr>
@@ -183,7 +216,7 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
       </div>
 
       <button className="calc-submit-btn" onClick={handleSubmit}>
-        기대값 계산 시작
+        기댓값 계산 시작
       </button>
     </div>
   );

@@ -5,6 +5,7 @@ import StarforceResult from './StarforceResult';
 import '../App.css';
 import '../styles/Starforce.css';
 import StarforceWorker from './workers/starforce.worker.ts?worker';
+import MarkovWorker from './workers/markov.worker?worker';
 
 interface StarforceProps {
   data: any;
@@ -16,6 +17,7 @@ interface StarforceSettings {
   targetStar: number;
   itemCost: number;
   event: string;
+  mode: string;
   stepSettings: {
     [key: number]: {
       catch: boolean;
@@ -28,17 +30,25 @@ const Starforce: React.FC<StarforceProps> = ({ data }) => {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [calculationResult, setCalculationResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [resultMode, setResultMode] = useState<string>('simulation');
 
   const handleItemSelect = (item: any) => {
     setSelectedItem(item);
   };
 
-
   const handleCalculate = (inputSettings: StarforceSettings) => {
     setLoading(true);
     setCalculationResult(null);
 
-    const worker = new StarforceWorker();
+    setResultMode(inputSettings.mode);
+
+    console.log(resultMode);
+
+    let worker = new StarforceWorker();
+
+    if(inputSettings.mode === 'markov'){
+      worker = new MarkovWorker();
+    }
 
     worker.postMessage({
       settings: inputSettings,
@@ -58,22 +68,23 @@ const Starforce: React.FC<StarforceProps> = ({ data }) => {
     };
   };
 
+
   if (!data) {
-  return (
-    <div className="main-container">
-      <div className='error-userguide'>
-        메뉴 [캐릭터 정보]에서 <br />먼저 닉네임을 검색해주세요!
+    return (
+      <div className="main-container">
+        <div className='error-userguide'>
+          메뉴 [캐릭터 정보]에서 <br />먼저 닉네임을 검색해주세요!
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
     <div className="main-container">
-      <h1 className="main-title">스타포스 기대값 계산기</h1>
+      <h1 className="main-title">스타포스 기댓값 계산기</h1>
 
       {loading && (
-        <div style={{ textAlign: 'center', color: '#fff' }}>
+        <div style={{ textAlign: 'center', color: '#888' }}>
           계산 중입니다… (3만 회 시뮬레이션)
         </div>
       )}
@@ -96,7 +107,7 @@ const Starforce: React.FC<StarforceProps> = ({ data }) => {
         </div>
 
         <div className="section-card" style={{ flex: 1, minHeight: 700}}>
-          <StarforceResult result={calculationResult} />
+          <StarforceResult result={calculationResult} mode = {resultMode}/>
         </div>
       </div>
     </div>

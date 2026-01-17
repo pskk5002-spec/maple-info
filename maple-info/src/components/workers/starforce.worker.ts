@@ -6,6 +6,7 @@ interface StarforceSettings {
   targetStar: number;
   itemCost: number;
   event: string;
+  mode: string;
   stepSettings: {
     [key: number]: {
       catch: boolean;
@@ -113,5 +114,6 @@ self.onmessage = (e) => {
       p99: Number(samples[Math.floor(samples.length * 0.99)]),
     },
     graphData: trimmed.map(v => Number(v)),
+    mode: 'simulation',
   });
 };
