@@ -159,7 +159,7 @@ function App() {
                 onClick={handleCalcMenuClick} // 클릭해도 페이지 이동 방지
                 style={{ cursor: 'default' }}
               >
-                <span>{isSidebarOpen ? '기대값 계산기' : '📟'}</span>
+                <span>{isSidebarOpen ? '기댓값 계산기' : '📟'}</span>
                 {window.innerWidth <= 768 && <span>{isSubmenuOpen ? '▲' : '▼'}</span>}
               </NavLink>
               <div className = "submenu">

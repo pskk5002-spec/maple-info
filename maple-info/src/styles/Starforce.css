@@ -64,8 +64,8 @@
 }
 
 .input-lable input {
-  margin-top: 10px; /* 원하는 만큼 수치 조절 */
-  display: block;    /* 확실하게 아래로 떨어지게 함 */
+  margin-top: 10px;
+  display: block;
 }
 
 .input-group label{

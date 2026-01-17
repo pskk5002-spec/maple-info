@@ -6,7 +6,6 @@ interface StarforceSettings {
   targetStar: number;
   itemCost: number;
   event: string;
-  mode: string;
   stepSettings: {
     [key: number]: {
       catch: boolean;
@@ -14,8 +13,6 @@ interface StarforceSettings {
     };
   };
 }
-
-
 
 const SUCCESS_RATE = [
   0.95, 0.9, 0.85, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55,
@@ -29,91 +26,104 @@ const DESTROY_RATE = [
   0.105, 0.1275, 0.17, 0.18, 0.18, 0.18, 0.186, 0.19, 0.194, 0.198,
 ];
 
-self.onmessage = (e) => {
+// 비용 계산용 분모 테이블
+const COST_DIVISORS: { [key: number]: number } = {
+  10: 571, 11: 314, 12: 214, 13: 157, 14: 107, 15: 200, 
+  16: 200, 17: 150, 18: 70, 19: 45, 20: 200, 21: 125
+};
+
+self.onmessage = (e: MessageEvent) => {
   const { settings } = e.data as { settings: StarforceSettings };
   const ITERATIONS = 30_000;
   const itemLevel = settings.itemLevel || 160;
   const levelCubed = itemLevel ** 3;
   const spareCost = BigInt(settings.itemCost || 0);
 
+  // --- 1. 사전 계산 (Pre-calculation) ---
+  // 루프 안에서 if와 Math 연산을 아예 없애기 위해 모든 수치를 배열화합니다.
+  const stepStats = new Array(31);
+  
+  for (let s = 0; s < 30; s++) {
+    const cfg = settings.stepSettings?.[s] ?? { catch: true, guard: false };
+    
+    // 확률 계산
+    let sRate = SUCCESS_RATE[s];
+    let dRate = DESTROY_RATE[s];
+    if (cfg.catch) sRate = Math.min(sRate * 1.05, 1);
+    
+    // 파괴 확률 보정 (이벤트)
+    if ((settings.event === 'shining' || settings.event === 'destroy_reduce') && s >= 15 && s <= 21) {
+      dRate *= 0.7;
+    }
+
+    // 비용 계산 (미리 BigInt화)
+    const powStar = Math.pow(s + 1, 2.7);
+    let baseCost;
+    if (s <= 9) baseCost = 1000 + (levelCubed * (s + 1)) / 36;
+    else baseCost = 1000 + (levelCubed * powStar) / (COST_DIVISORS[s] ?? 200);
+
+    const safeguard = cfg.guard && s >= 15 && s <= 17;
+    let finalCost = safeguard ? baseCost * 1.5 : baseCost;
+    if (settings.event === 'shining' || settings.event === '30%') finalCost *= 0.7;
+
+    stepStats[s] = {
+      successThreshold: sRate,
+      destroyThreshold: sRate + (safeguard ? 0 : dRate),
+      cost: BigInt(Math.round(finalCost)),
+      isSafeguard: safeguard
+    };
+  }
+
+  // 결과 저장용 변수
   let sumCost = 0n;
   let sumDestroyed = 0;
-  const samples: bigint[] = [];
+  const samples = new BigUint64Array(ITERATIONS); // 메모리 효율을 위해 TypedArray 사용
 
+  // --- 2. 메인 시뮬레이션 루프 ---
   for (let i = 0; i < ITERATIONS; i++) {
     let star = settings.currentStar;
     let totalCost = 0n;
-    let destroyed = 0;
+    let destroyedCount = 0;
 
     while (star < settings.targetStar) {
-      const cfg = settings.stepSettings?.[star] ?? { catch: true, guard: false };
-      let successRate = SUCCESS_RATE[star];
-      let destroyRate = DESTROY_RATE[star];
-
-      if ((settings.event === 'shining' || settings.event === 'destroy_reduce') && star >= 15 && star <= 21) {
-        destroyRate *= 0.7;
-      }
-      if (cfg.catch) {
-        successRate = Math.min(successRate * 1.05, 1);
-      }
-
-      const powStar = Math.pow(star + 1, 2.7);
-      let baseCost;
-
-      // 사용자 제공 공식 그대로 적용
-      if (star <= 9) baseCost = 1000 + (levelCubed * (star + 1)) / 36;
-      else if (star === 10) baseCost = 1000 + (levelCubed * powStar) / 571;
-      else if (star === 11) baseCost = 1000 + (levelCubed * powStar) / 314;
-      else if (star === 12) baseCost = 1000 + (levelCubed * powStar) / 214;
-      else if (star === 13) baseCost = 1000 + (levelCubed * powStar) / 157;
-      else if (star === 14) baseCost = 1000 + (levelCubed * powStar) / 107;
-      else if (star === 15) baseCost = 1000 + (levelCubed * powStar) / 200;
-      else if (star === 16) baseCost = 1000 + (levelCubed * powStar) / 200;
-      else if (star === 17) baseCost = 1000 + (levelCubed * powStar) / 150;
-      else if (star === 18) baseCost = 1000 + (levelCubed * powStar) / 70;
-      else if (star === 19) baseCost = 1000 + (levelCubed * powStar) / 45;
-      else if (star === 20) baseCost = 1000 + (levelCubed * powStar) / 200;
-      else if (star === 21) baseCost = 1000 + (levelCubed * powStar) / 125;
-      else baseCost = 1000 + (levelCubed * powStar) / 200;
-
-      const safeguard = cfg.guard && star >= 15 && star <= 17;
-      let stepCost = safeguard ? baseCost * 1.5 : baseCost;
-
-      if (settings.event === 'shining' || settings.event === '30%') {
-        stepCost *= 0.7;
-      }
-
-      totalCost += BigInt(Math.round(stepCost));
+      const stats = stepStats[star];
+      totalCost += stats.cost;
 
       const roll = Math.random();
-      if (roll < successRate) {
+      
+      if (roll < stats.successThreshold) {
         star++;
-      } else if (!safeguard && roll < successRate + destroyRate) {
-        destroyed++;
+      } else if (roll < stats.destroyThreshold) {
+        // 파괴 시
+        destroyedCount++;
         totalCost += spareCost;
-        star = 12; // 파괴 시 12성 복원
-      } 
+        star = 12;
+      }
+      // 실패 시 유지는 별도 처리 없이 다시 while문 처음으로 (star 변동 없음)
     }
 
     sumCost += totalCost;
-    sumDestroyed += destroyed;
-    samples.push(totalCost);
+    sumDestroyed += destroyedCount;
+    samples[i] = totalCost;
   }
 
-  samples.sort((a, b) => (a < b ? -1 : 1));
-  const cutoff = Math.floor(samples.length * 0.999);
-  const trimmed = samples.slice(0, cutoff);
+  // --- 3. 결과 가공 ---
+  samples.sort();
+  
+  const p30 = Number(samples[Math.floor(ITERATIONS * 0.3)]);
+  const p50 = Number(samples[Math.floor(ITERATIONS * 0.5)]);
+  const p80 = Number(samples[Math.floor(ITERATIONS * 0.8)]);
+  const p99 = Number(samples[Math.floor(ITERATIONS * 0.99)]);
+
+  // 그래프 데이터 (샘플링 최적화)
+  const cutoff = Math.floor(ITERATIONS * 0.999);
+  const graphData = Array.from(samples.slice(0, cutoff)).map(v => Number(v));
 
   self.postMessage({
     averageCost: Number(sumCost / BigInt(ITERATIONS)),
     averageDestruction: sumDestroyed / ITERATIONS,
-    percentiles: {
-      p30: Number(samples[Math.floor(samples.length * 0.3)]),
-      p50: Number(samples[Math.floor(samples.length * 0.5)]),
-      p80: Number(samples[Math.floor(samples.length * 0.8)]),
-      p99: Number(samples[Math.floor(samples.length * 0.99)]),
-    },
-    graphData: trimmed.map(v => Number(v)),
+    percentiles: { p30, p50, p80, p99 },
+    graphData,
     mode: 'simulation',
   });
 };
