@@ -13,9 +13,20 @@ function App() {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
+  // 테마 (다크 OR 라이트 모드)
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('color-theme') || 'light';
+  });
+
+
+  // URL
   const location = useLocation();
 
   const lastSearchedName = useRef<string>('');
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
 
 
   // 날짜 계산 로직
@@ -85,6 +96,13 @@ function App() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // <html> 태그에 color-theme 속성을 설정합니다.
+    document.documentElement.setAttribute('color-theme', theme);
+    // 다음 접속을 위해 로컬스토리지에도 저장합니다.
+    localStorage.setItem('color-theme', theme);
+  }, [theme]); // theme 상태가 바뀔 때마다 실행됨
 
   useEffect(()=>{
     const params = new URLSearchParams(location.search);
@@ -171,6 +189,9 @@ function App() {
             <NavLink to={`/bossfettern${location.search}`} className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
               {isSidebarOpen ? '보스 패턴 공략' : '🗡️'}
             </NavLink>
+            <button className="theme-toggle-btn" onClick={toggleTheme}>
+              {theme === 'light' ? '🌙 다크모드' : '☀️ 라이트모드'}
+            </button>
           </div>
         </nav>
 

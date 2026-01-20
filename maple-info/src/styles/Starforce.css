@@ -19,6 +19,7 @@
 .input-header {
   margin-bottom: 24px;
   font-size: 1.5rem;
+  color: var(--input-area);
   border-bottom: 3px solid #ff9100;
   padding-bottom: 12px;
   font-weight: 800;
@@ -59,7 +60,7 @@
   margin-bottom: 20px;
   position: relative;
   font-weight: 700;
-  color: #444;
+  color: var(--input-label);
   text-align: left;
 }
 
@@ -72,7 +73,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 700;
-  color: #444;
+  color: var(--input-label);
 }
 
 .input-formatmeso{
@@ -205,9 +206,11 @@
   padding: 5px;
   margin: 1px;
   font-weight: bold; 
+
+  color: var(--input-label);
 }
 
-.highlight { color: #391766; }
+.highlight { color: var(--cost-highlight); }
 .percentile-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 .percentile-table th, .percentile-table td { padding: 10px; border-bottom: 1px solid #444; text-align: left; }
 .percentile-table th { color: #888; font-size: 0.85rem; }
@@ -217,6 +220,12 @@
   width: 350px;
   height: 300px; 
   margin: 30px auto;
+
+  color: var(--input-label);
+}
+
+.percentile-section{
+  color: var(--input-label);
 }
 
 /* 체크박스 컨테이너 (정렬을 위해 td 안에서 사용) */
@@ -276,6 +285,98 @@ tr td {
   color: #555;
   text-align: center;
 }
+
+/* 1. 부모 행: 라벨과 아이콘을 한 줄로 */
+.mode-label-row {
+  display: flex;
+  align-items: center;  /* 아이콘과 텍스트 중앙 정렬 */
+  gap: 6px;             /* 사이 간격 */
+  margin-bottom: 10px;  /* 아래 select 박스와의 거리 */
+}
+
+/* 2. 텍스트 스타일: 기존 input-lable의 폰트 스타일만 가져옴 */
+.mode-title {
+  font-weight: 700;
+  color: var(--input-label);
+  font-size: 18px;
+  line-height: 1;      /* 높이 중복 방지 */
+}
+
+/* 4. 아이콘 위치 미세 조정 */
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1.2px solid #999;
+  border-radius: 50%;
+  color: #999;
+  font-size: 12px;
+  font-family: serif;
+  font-style: "Times New Roman", serif;
+  font-weight: bold;
+  position: relative;
+  flex-shrink: 0;
+  transform: translateY(1px); /* 텍스트 높낮이에 맞춰 살짝 내림 */
+}
+
+/* 1. 툴팁 박스 (본체) */
+.info-icon::after {
+  content: attr(data-tooltip); /* HTML의 data-tooltip 내용을 가져옴 */
+  
+  /* 기본 숨김 상태 */
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.2s ease-in-out; /* 부드럽게 나타나게 함 */
+  
+  /* 위치 설정 (아이콘 위쪽 정중앙) */
+  position: absolute;
+  bottom: 150%; /* 아이콘에서 위로 1.5배만큼 띄움 */
+  left: 50%;
+  transform: translateX(-50%); /* 정확히 중앙 정렬 */
+  
+  /* 디자인 */
+  background-color: #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: sans-serif; /* 툴팁 글씨는 가독성을 위해 고딕체 */
+  font-weight: normal;
+  white-space: pre-line;   /* 줄바꿈(&#10;) 인식 */
+  z-index: 999;
+  width: max-content;      /* 글자 길이에 맞게 너비 조절 */
+  max-width: 220px;        /* 너무 길어지면 줄바꿈 */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* 2. 툴팁 아래 작은 화살표(꼬리) */
+.info-icon::before {
+  content: "";
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+
+  position: absolute;
+  bottom: 130%; /* 툴팁 바로 아래 붙임 */
+  left: 50%;
+  transform: translateX(-50%);
+  
+  /* 삼각형 만들기 */
+  border: 6px solid transparent;
+  border-top-color: #333;
+  z-index: 999;
+}
+
+/* 3. 마우스 올렸을 때 등장! */
+.info-icon:hover::after,
+.info-icon:hover::before {
+  visibility: visible;
+  opacity: 1;
+  bottom: 140%; /* 살짝 위로 올라오는 애니메이션 효과 (선택사항) */
+}
+
 
 @media (max-width: 768px) {
   .setting-scroll-area {

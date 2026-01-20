@@ -160,7 +160,15 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
 
       {/* 모드 선택 (시뮬, 마르코프 체인) */}
       <div className='input-group'>
-        <div className='input-lable' style={ {fontSize: '18px'}}>모드 선택</div>
+        <div className='mode-label-row'>
+    <span className="mode-title">모드 선택</span>
+    <div 
+      className='info-icon' 
+      data-tooltip="시뮬레이션: 3만 번의 시행 결과 분포&#10;마르코프: 수학적 기댓값 계산"
+    >
+      i
+    </div>
+  </div>
         <select 
         className='sf-select'
         value={calcMethod}

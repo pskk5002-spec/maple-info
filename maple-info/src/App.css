@@ -1,3 +1,58 @@
+:root{
+  --maple-color: #ff9100;
+  /*화이트보다 약간 어두운 톤*/
+  --background: #f8f9fa;
+  --section-card: white;
+  --sidebar: #1e1e20;
+  --main-title: #333;
+  --info-date: #f0f0f0;
+  --input-area: black;
+  
+  --section-card-inner: #ffffff;
+  --equip-window: gainsboro;
+  --equip-slot: #ffffff;
+  
+  --guild-tag: #f1f3f5;
+  --guild-label: #888;
+  --char-name: #1a1a1a;
+
+  --power-box: #fff9f0;
+  --power-box-label: #888;
+  --stat-row: #212529;
+
+  --input-label: #444;
+  --cost-highlight: #391766;
+}
+
+:root[color-theme = 'dark']{
+  /*정석 다크모드 배경화면*/
+  --background: #1e1e1e;
+  /*배경화면보다 조금 밝아서 원근감 살림(카드가 더 가까이)*/
+  --section-card: #2d2d2d;
+  /*배경화면보다 어둡게*/
+  --sidebar: #181818;
+  /*약간 회색빛 도는 화이트 후보: #F5F5F5, #FF9100*/
+  --main-title: #E0E0E0;
+  --info-date: #2d2d2d;
+  --input-area: #ddd;
+
+  --section-card-inner: rgb(78, 78, 78);
+  --equip-window: rgb(78, 78, 78);
+  --equip-slot: #c0c0c0;
+
+  --guild-tag: #f19100;
+  --guild-label: #3d3d3d;
+  --char-name: #8b8b8b;
+
+  --power-box: #777777;
+  --power-box-label: #ffffff;
+  --stat-row: #ffffff;
+
+  --input-label: #ddd;
+  --cost-highlight: #ddd;
+}
+
+
 html,
 body {
   margin: 0;
@@ -17,12 +72,14 @@ body {
   justify-content: flex-start; /* 위쪽부터 쌓기 */
   padding: 60px 20px;
   box-sizing: border-box;
+
+  background-color: var(--background);
 }
 
 .main-title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #333;
+  color: var(--main-title);
   margin-bottom: 30px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -40,10 +97,12 @@ body {
   flex: 1;
   padding: 12px 20px;
   font-size: 16px;
+  color: var(--input-area);
   border: 2px solid #ddd;
   border-radius: 8px;
   outline: none;
   transition: border-color 0.3s;
+  background-color: var(--section-card);
 }
 
 .search-input:focus {
@@ -85,7 +144,7 @@ body {
 }
 
 .section-card {
-  background: white;
+  background: var(--section-card);
   border-radius: 12px;
   padding: 0; /* 내부 padding을 0으로 해야 BasicInfo의 배경색이 꽉 참 */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -104,7 +163,7 @@ body {
   font-size: 14px;
   color: #888;
   font-weight: 500;
-  background: #f0f0f0;
+  background: var(--info-date);
   padding: 10px 15px; /* 패딩을 조금 늘려 버튼과 높이를 맞춤 */
   border-radius: 8px;
   display: flex;
@@ -121,7 +180,7 @@ body {
 /* 사이드바 기본 스타일 (열린 상태) */
 .sidebar {
   width: 240px;
-  background-color: #1e1e20;
+  background-color: var(--sidebar);
   color: white;
   padding: 30px 15px; /* 패딩 살짝 조정 */
   display: flex;
@@ -267,7 +326,7 @@ body {
 .content-container {
   flex: 1;
   margin-left: 240px; /* 기본 여백 */
-  background-color: #f8f9fa;
+  background-color: var(--background);
   min-height: 100vh;
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
@@ -299,11 +358,11 @@ hr {
 }
 
 .error-userguide{
-  font-size: 50px;
+  font-size: 30px;
   text-align: center;
-  color: #ff9100;
+  color: #888;
   font-weight: bold;
-  margin: 5em 1em 0 1em;
+  margin: 4em 1em 0 1em;
 }
 
 /* select 박스 전체 스타일링 */

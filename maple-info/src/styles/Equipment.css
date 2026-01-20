@@ -1,7 +1,6 @@
 .equipment-window {
   width: 320px;
-  background-color: gainsboro;
-  border: 1px solid #e1e4e8;
+  background-color: var(--equip-window);
   border-radius: 16px;
   padding: 15px;
   box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2); /* 부드러운 그림자 */
@@ -31,7 +30,7 @@
 
 /* 아이템이 있을 때의 슬롯 */
 .slot:not(.empty) {
-  background-color: #ffffff;
+  background-color: var(--equip-slot);
   border: 1px solid #e9ecef;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }

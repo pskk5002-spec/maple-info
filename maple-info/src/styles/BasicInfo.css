@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  background: white;
+  background: var(--section-card);
   border-radius: 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   width: 100%; /* 부모인 .section-card에 맞게 꽉 채움 */
@@ -15,7 +15,7 @@
 /* 캐릭터 이미지 배경 (약간의 입체감) */
 .image-wrapper {
   width: 100%;
-  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  background: #ffffff;
   padding: 20px 0; /* padding을 적절히 조절 */
   display: flex;
   justify-content: center;
@@ -55,7 +55,7 @@
   font-size: 32px; /* 이름 크기 상향 */
   font-weight: 800;
   margin: 10px 0;
-  color: #1a1a1a;
+  color: var(--char-name);
 }
 
 .detail-row {
@@ -72,9 +72,14 @@
   color: #ddd;
 }
 
+.class-text{
+  color: var(--char-name);
+  font-weight: 400;
+}
+
 /* 길드 정보 박스 */
 .guild-tag {
-  background-color: #f1f3f5;
+  background-color: var(--guild-tag);
   padding: 8px 15px;
   border-radius: 8px;
   display: flex;
@@ -84,10 +89,10 @@
 }
 
 .guild-label {
-  color: #888;
+  color: var(--guild-label);
 }
 
 .guild-name {
   color: #444;
-  font-weight: 600;
+  font-weight: 700;
 }

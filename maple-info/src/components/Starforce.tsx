@@ -73,7 +73,7 @@ const Starforce: React.FC<StarforceProps> = ({ data }) => {
     return (
       <div className="main-container">
         <div className='error-userguide'>
-          메뉴 [캐릭터 정보]에서 <br />먼저 닉네임을 검색해주세요!
+          메뉴 [캐릭터 정보]에서 먼저 닉네임을 검색해주세요!
         </div>
       </div>
     );

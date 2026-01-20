@@ -129,11 +129,7 @@ function Stats({ stats, ability, characterClass }: any) {
         </div>
         <hr />
         {/* 하단: 어빌리티 영역 */}
-        <div className="ability-section">
-          <div className="ability-header">
-            <span className="title">어빌리티</span>
-          </div>
-          
+        <div className="ability-section">      
           <div className="ability-list">
             {abilityInfo.map((item: any, idx: number) => {
               // 각 줄의 등급에 맞는 클래스 추출 (레전드리, 유니크, 에픽, 레어)
