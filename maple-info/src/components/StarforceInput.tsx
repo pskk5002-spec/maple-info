@@ -164,7 +164,7 @@ const StarforceInput: React.FC<StarforceInputProps> = ({ selectedItem, onCalcula
     <span className="mode-title">모드 선택</span>
     <div 
       className='info-icon' 
-      data-tooltip="시뮬레이션: 3만 번의 시행 결과 분포&#10;마르코프: 수학적 기댓값 계산"
+      data-tooltip="시뮬레이션: 3만 번의 시행 결과 분포 &#10; (26성 이상 시도시 CPU 열일함)&#10;마르코프: 수학적 기댓값 계산(이론)"
     >
       i
     </div>

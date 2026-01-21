@@ -110,15 +110,21 @@ function App() {
 
     if(!characterNameFromUrl) return;
 
+    //오늘 기준 요청해야 할 날짜 받기
+    const targetDate = getQueryDate();
+
     //캐시 우선 조회
     const cached = localStorage.getItem(`maple-${characterNameFromUrl}`);
 
     if(cached){
       const parsed = JSON.parse(cached);
-      setSelectedDate(parsed.date);
-      setData(parsed.data);
-      lastSearchedName.current = characterNameFromUrl;
-      return;
+      
+      if(parsed.date === targetDate){
+        setSelectedDate(parsed.date);
+        setData(parsed.data);
+        lastSearchedName.current = characterNameFromUrl;
+        return;
+      }
     }
 
     searchCharacter(characterNameFromUrl);
@@ -189,10 +195,15 @@ function App() {
             <NavLink to={`/bossfettern${location.search}`} className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
               {isSidebarOpen ? '보스 패턴 공략' : '🗡️'}
             </NavLink>
-            <button className="theme-toggle-btn" onClick={toggleTheme}>
-              {theme === 'light' ? '🌙 다크모드' : '☀️ 라이트모드'}
-            </button>
           </div>
+          
+          <div className="sidebar-footer">
+              <button className="theme-toggle-btn" onClick={toggleTheme}>
+                <span className="icon">{theme === 'light' ? '🌙' : '☀️'}</span>
+                {/* 사이드바가 열려있을 때만 글자 표시 */}
+                {isSidebarOpen && <span>{theme === 'light' ? '다크모드' : '라이트모드'}</span>}
+              </button>
+            </div>
         </nav>
 
         <div className="content-container">

@@ -58,6 +58,8 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
+
+  background-color: var(--background);
 }
 
 body {
@@ -76,6 +78,19 @@ body {
   background-color: var(--background);
 }
 
+.yeti {
+  position: absolute;
+  width: 180px;
+  height: auto;
+  transform: rotate(-15deg);
+  pointer-events: none;
+
+  /* 수정된 부분 */
+  right: -300px;       /* 왼쪽 기준(left)이 아니라 오른쪽(right) 기준으로 배치 */
+  top: -120px;         /* 위치는 적절히 조절 */
+  max-width: 25vw;    /* 화면 너비의 25%를 넘지 않도록 제한 */
+  z-index: 1;
+}
 .main-title {
   font-size: 2.5rem;
   font-weight: bold;
@@ -85,12 +100,14 @@ body {
 }
 
 .search-area {
+  position: relative;
   display: flex;
   align-items: center; /* 세로 중앙 정렬 유지 */
   gap: 10px;
   margin-bottom: 50px;
   width: 100%;
   max-width: 700px; /* 500px에서 700px로 확장 (날짜 공간 확보) */
+
 }
 
 .search-input {
@@ -207,6 +224,16 @@ body {
   height: 40px;
 }
 
+.sidebar-footer {
+  /* 메뉴 영역이 flex:1로 밀어내기 때문에 자동으로 맨 아래 배치됨 */
+  margin-top: auto; 
+  margin-bottom: 50px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* 구분선 (선택) */
+  width: 100%;
+  flex-shrink: 0;
+}
+
 .sidebar-logo {
   font-size: 20px;
   font-weight: 800;
@@ -222,6 +249,11 @@ body {
   opacity: 0;
   width: 0;
   pointer-events: none;
+}
+
+.sidebar-closed .theme-toggle-btn {
+  justify-content: center; /* 아이콘을 중앙으로 */
+  padding: 12px 0;
 }
 
 /* 토글 버튼 스타일 */
@@ -246,6 +278,7 @@ body {
 /* 메뉴 리스트 */
 .sidebar-menu {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 10px;
 }
@@ -367,9 +400,9 @@ hr {
 
 /* select 박스 전체 스타일링 */
 select {
-  appearance: none;          /* 브라우저 기본 화살표 제거 */
-  -webkit-appearance: none;   /* Safari용 제거 */
-  -moz-appearance: none;      /* Firefox용 제거 */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   
   width: 100%;
   padding: 12px 35px 12px 15px; /* 우측에 화살표 공간 확보 */
@@ -401,6 +434,19 @@ select option {
   padding: 10px;
   background-color: #fff;
   color: #333;
+}
+
+.theme-toggle-btn {
+  width: 100%;           /* 사이드바 너비에 맞춤 */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* ★ 왼쪽 정렬 */
+  padding: 12px;
+  background: var(--section-card);
+  border: none;
+  color: var(--main-title);
+  gap: 12px;
+  cursor: pointer;
 }
 
 /*===========================
@@ -451,6 +497,20 @@ select option {
   body {
     height: 100%;
     overflow: hidden;
+  }
+
+  .sidebar-footer {
+  /* 메뉴 영역이 flex:1로 밀어내기 때문에 자동으로 맨 아래 배치됨 */
+  margin-bottom: 150px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* 구분선 (선택) */
+  width: 100%;
+  flex-shrink: 0;
+}
+
+
+  .yeti {
+    display: none;
   }
 
   .content-container {

@@ -10,10 +10,12 @@ function CharacterSearchPage({ data, loading, selectedDate }: any) {
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    if(!characterName.trim()) return alert("정보를 불러올 수 없습니다.");
+    const cleanName = characterName.trim();
+
+    if(!cleanName) return alert("정보를 불러올 수 없습니다.");
 
     //URL 변경
-    navigate(`/?name=${encodeURIComponent(characterName)}`);
+    navigate(`/?name=${encodeURIComponent(cleanName)}`);
   }
 
   useEffect(() => {
@@ -25,8 +27,8 @@ function CharacterSearchPage({ data, loading, selectedDate }: any) {
   return (
     <div className="main-container">
       <h1 className='main-title'>Maple Info</h1>
-      
       <div className="search-area">
+        <img className = "yeti" src = "/images/characters/예티.webp" alt = "예티" />
         <input 
           className="search-input" 
           value={characterName} 
@@ -39,7 +41,7 @@ function CharacterSearchPage({ data, loading, selectedDate }: any) {
         </button>
         
         {selectedDate && (
-          <span className="info-date">데이터 기준일: {selectedDate}</span>
+            <span className="info-date">데이터 기준일: {selectedDate}</span>
         )}
       </div>
 

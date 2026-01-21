@@ -1,0 +1,16 @@
+export const LEVEL_MAPS = [
+  { min: 1,   max: 199,  name: '시작의마을', img: '/images/maps/시작의마을.png' },
+  { min: 200, max: 209, name: '소멸의여로',   img: '/images/maps/소멸의여로.webp' },
+  { min: 210, max: 219, name: '츄츄', img: '/images/maps/츄츄.webp' },
+  { min: 220, max: 224, name: '레헬른', img: '/images/maps/레헬른.png' },
+  { min: 225, max: 229, name: '아르카나',   img: '/images/maps/아르카나.jpeg' },
+  { min: 230, max: 234, name: '모라스', img: '/images/maps/모라스.webp' },
+  { min: 235, max: 259, name: '에스페라', img: '/images/maps/에스페라.webp' },
+  { min: 260, max: 264, name: '세르니움', img: '/images/maps/세르니움.webp' },
+  { min: 265, max: 269, name: '호텔', img: '/images/maps/호텔.webp' },
+  { min: 270, max: 274, name: '오디움', img: '/images/maps/오디움.webp' },
+  { min: 275, max: 279, name: '도원경', img: '/images/maps/도원경.webp' },
+  { min: 280, max: 284, name: '아르테리아', img: '/images/maps/아르테리아.webp' },
+  { min: 285, max: 289, name: '카르시온', img: '/images/maps/카르시온.webp' },
+  { min: 290, max: 300, name: '탈라하트', img: '/images/maps/탈라하트.webp' },
+];
