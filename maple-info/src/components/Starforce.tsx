@@ -81,7 +81,7 @@ const Starforce: React.FC<StarforceProps> = ({ data }) => {
 
   return (
     <div className="main-container">
-      <h1 className="main-title">스타포스 기댓값 계산기</h1>
+      <h1 className="main-title">⭐스타포스 기댓값 계산기</h1>
 
       {loading && (
         <div style={{ textAlign: 'center', color: '#888' }}>

@@ -4,6 +4,7 @@ import axios from 'axios';
 import CharacterSearchPage from './components/CharacterSearchPage';
 import './App.css';
 import Starforce from './components/Starforce';
+import Cube from './components/Cube';
 import BossPettern from './components/BossPettern';
 
 function App() {
@@ -218,6 +219,9 @@ function App() {
             <Route path="/calculator/starforce" element={
               <Starforce data = {data}/>
             } />
+            <Route path='/calculator/cube' element = {
+              <Cube />
+            }/>
             <Route path="/bossfettern" element={
               <BossPettern />
             } />
