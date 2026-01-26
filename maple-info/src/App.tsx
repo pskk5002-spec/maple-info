@@ -6,6 +6,7 @@ import './App.css';
 import Starforce from './components/Starforce';
 import Cube from './components/Cube';
 import BossPettern from './components/BossPettern';
+import PartyList from './components/PartyList'
 
 function App() {
   // 전역 데이터 상태
@@ -196,7 +197,12 @@ function App() {
             <NavLink to={`/bossfettern${location.search}`} className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
               {isSidebarOpen ? '보스 패턴 공략' : '🗡️'}
             </NavLink>
+            <hr />
+            <NavLink to={`/partylist${location.search}`} className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+              {isSidebarOpen ? '파티 모집 게시판' : '📝'}
+            </NavLink>
           </div>
+
           
           <div className="sidebar-footer">
               <button className="theme-toggle-btn" onClick={toggleTheme}>
@@ -224,6 +230,9 @@ function App() {
             }/>
             <Route path="/bossfettern" element={
               <BossPettern />
+            } />
+            <Route path="/partylist" element={
+              <PartyList />
             } />
           </Routes>
         </div>

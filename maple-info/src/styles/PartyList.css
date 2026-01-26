@@ -1,0 +1,313 @@
+/* 게시판 전용 컨테이너 (main-container 내부에서 작동) */
+.party-board-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: 40px;
+    padding: 20px 0;
+}
+
+.partylist-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 가로 중앙 정렬 */
+  justify-content: flex-start; /* 위쪽부터 쌓기 */
+  padding: 60px 20px;
+  box-sizing: border-box;
+
+
+  min-height: 1000px;
+
+  background-color: var(--background);
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+        url('/images/backgrounds/partylist_background.jpg') no-repeat center center;
+    background-size: cover;
+    border-radius: 20px; /* 게시판 전체 테두리를 살짝 둥글게 하면 더 예쁩니다 */
+    box-shadow: 0 0 50px rgba(0,0,0,0.5); /* 배경과 분리되는 입체감 */
+}
+
+.board-header-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.board-main-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ffbc00;
+    margin-left: 30px;
+    text-align: center;
+}
+
+/* 필터 바 콤팩트화 */
+.filter-bar.section-card {
+    display: flex !important;
+    gap: 10px;
+    padding: 12px !important;
+    margin-bottom: 15px;
+    width: fit-content !important;
+    min-width: auto !important;
+}
+
+/* 리스트 카드 덮어쓰기 */
+.party-board-card.section-card {
+    width: 100% !important;
+    min-width: auto !important;
+    display: block !important;
+    padding: 0 !important;
+    background: #252525;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* 그리드 구조: 유형(120) 난이도(150) 설명(1fr) 작성자(140) */
+.list-header, .post-row {
+    display: grid;
+    grid-template-columns: 70px 120px 90px 110px 70px 1fr 130px;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 15px;
+    text-align: center;
+}
+
+.list-header {
+    background: #111;
+    color: #888;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #ffbc00;
+}
+
+.post-row {
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.2);
+    transition: 0.2s;
+}
+
+.post-row > div {
+    border-right: 1px dotted rgba(255, 255, 255, 0.15);
+    height: 100%; /* 선이 칸 높이만큼 꽉 차게 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post-row > div:last-child {
+    border-right: none;
+}
+
+.post-row:last-child {
+    border-bottom: none;
+}
+
+.post-row:hover {
+    background: rgba(255, 188, 0, 0.03);
+}
+
+.post-row .col-desc {
+    justify-content: flex-start;
+    padding-left: 15px;
+}
+
+.list-header > span {
+    border-right: 1px dotted rgba(255, 188, 0, 0.3); /* 헤더는 노란색 계열 점선 */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-header > span:last-child {
+    border-right: none;
+}
+
+/* 리스트 내부 스타일 */
+.post-boss-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.boss-name { font-size: 0.9rem; color: #eee; }
+
+.type-tag {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+}
+.type-tag.구인 { background: #ff4d4d; color: white; }
+.type-tag.구직 { background: #3498db; color: white; }
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #aaa;
+    text-align: center;
+}
+
+/* 파티 설명 말줄임 처리 핵심 */
+.post-desc {
+    font-size: 0.9rem;
+    color: #ddd;
+    text-align: left;
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* ... 표시 */
+}
+
+.post-user {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 0.8rem;
+    color: #bbb;
+}
+
+.user-nick { font-weight: bold; }
+.user-dc { font-size: 0.7rem; margin-top: 2px; }
+
+/* 모달 스타일 */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #2a2a2a;
+    width: 420px;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #ffbc00;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-grid label { color: #ffbc00; font-size: 0.9rem; font-weight: bold; }
+
+.modal-grid input, .modal-grid select, .modal-grid textarea {
+    background: #1a1a1a;
+    border: 1px solid #444;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.full-width { grid-column: span 2; }
+.modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+
+.warnning-p{
+    color: gray;
+    font-size: 10px;
+    text-align: right;
+}
+
+.cancel-btn {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.empty-msg {
+    padding: 40px;
+    color: #666;
+    text-align: center;
+}
+
+.write-open-btn {
+  background: #ffbc00;
+  color: #1a1a1a;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+  height: 55px;
+}
+
+/**/
+.party-table {
+    width: 100%;
+    min-width: 1200px;
+    border-collapse: collapse; /* 선 겹침 방지 */
+    table-layout: fixed; /* 컬럼 너비 고정 */
+    background: #252525;
+}
+
+/* 헤더 스타일 */
+.party-table thead {
+    background: #111;
+    border-bottom: 2px solid #ffbc00;
+}
+
+.party-table th {
+    padding: 15px 10px;
+    color: #ffbc00;
+    font-size: 0.9rem;
+    font-weight: bold;
+    /* 헤더 세로 구분 점선 */
+    border-right: 1px dotted rgba(255, 188, 0, 0.3);
+
+}
+
+/* 본문 스타일 */
+.post-row-tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* 가로 구분선 */
+    transition: 0.2s;
+}
+
+.post-row-tr:hover {
+    background: rgba(255, 188, 0, 0.03);
+}
+
+.party-table td {
+    padding: 12px 10px;
+    color: #eee;
+    font-size: 0.8rem;
+    vertical-align: middle;
+    /* 본문 세로 구분 점선 */
+    border-right: 1px dotted rgba(255, 255, 255, 0.15);
+}
+
+/* 각 행의 마지막 칸은 세로선 제거 */
+.party-table th:last-child,
+.party-table td:last-child {
+    border-right: none;
+}
+
+/* 텍스트 정렬 보조 클래스 */
+.text-center { text-align: center; }
+
+/* 설명 칸 말줄임 및 왼쪽 정렬 */
+.col-desc-td {
+    text-align: left;
+    white-space: wrap;
+    padding: 10px !important;
+}
+
+.col-party-intro{
+    background-color: #666;
+    border-radius: 20px;
+    
+    padding: 6px;
+}
+
+.dc-icon { font-size: 1.1rem; }
+.m-count { color: #ffeb3b; font-size: 0.8rem; }
