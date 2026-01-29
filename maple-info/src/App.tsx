@@ -135,6 +135,7 @@ function App() {
                   /* 로고 클릭시 데이터 날리고 데이터기준일 숨김 */
                   setData(null);
                   setSelectedDate('');
+                  localStorage.clear();
                 }}
               >
                 {isSidebarOpen ? 'MAPLE INFO' : 'M'}

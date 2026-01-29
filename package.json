@@ -1,0 +1,13 @@
+{
+  "name": "fullstack-dev",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "npm run dev --prefix maple-info",
+    "dev:server": "nodemon --exec node maple-server/server.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.11"
+  }
+}
