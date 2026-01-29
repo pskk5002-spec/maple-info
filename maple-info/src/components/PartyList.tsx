@@ -14,7 +14,7 @@ const BOSS_CONFIG: { [key: string]: string[] } = {
     '발드릭스': ['노말', '하드'],
 };
 
-const PartyList = () => {
+const PartyList = ({data}: any) => {
     const [posts, setPosts] = useState<any[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -78,18 +78,26 @@ const PartyList = () => {
         return matchBoss && matchType;
     });
 
+    if (!data) {
+    return (
+      <div className="main-container">
+        <div className='error-userguide'>
+          메뉴 [캐릭터 정보]에서 먼저 닉네임을 검색해주세요!
+        </div>
+      </div>
+    );
+  }
+
     return (
         <div className='partylist-container'>
             <div className="party-board-wrapper">
-                <div className="board-header-row">
-                    <div className="board-main-title">파티 모집 게시판</div>
-                </div>
+                <div className='board-main-title'>Board</div>
 
                 {/* 필터 및 등록 버튼 */}
                 <div className='input-between' style={{ alignItems: 'center', marginBottom: '15px' }}>
                     <div className="section-card filter-bar" style={{ display: 'flex', gap: '10px', padding: '10px' }}>
                         <select onChange={(e) => setFilterType(e.target.value)} className="sf-select">
-                            <option value="전체">모든 유형</option>
+                            <option value="전체">구인/구직</option>
                             <option value="구인">구인</option>
                             <option value="구직">구직</option>
                         </select>
@@ -122,7 +130,7 @@ const PartyList = () => {
                         <tbody>
                             {filteredPosts.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="empty-msg">등록된 파티가 없습니다.</td>
+                                    <td colSpan={7}><div className='empty-msg'>등록된 파티가 없습니다.</div></td>
                                 </tr>
                             ) : (
                                 filteredPosts.map(post => (
@@ -145,7 +153,7 @@ const PartyList = () => {
                                             <div className='col-party-intro'>{post.shortDescription}</div>
                                         </td>
                                         <td className="text-center user-nick">{post.nickname}</td>
-                                        <td className='text-center'><button onClick = {()=>handleDelete(post.id)}>삭제</button></td>
+                                        <td className='text-center'><button className='delete-btn' disabled = {data.basic.character_name !== post.nickname} onClick = {()=>handleDelete(post.id)}>삭제</button></td>
                                     </tr>
                                 )
                             ))}

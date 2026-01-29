@@ -377,9 +377,25 @@ body {
 }
 
 .search-hint {
+  display: inline-block;
+  animation: move-zigzag 2s infinite;
   font-size: 15px;
   opacity: 0.8;
   color: #f0f0f0;
+}
+
+@keyframes move-zigzag{
+  0% {
+    transform: translateX(0);
+    animation-timing-function: ease-out; /* 오른쪽으로 갈 때의 가속도 */
+  }
+  20% {
+    transform: translateX(13px); /* 오른쪽 끝 도착 (전체 시간의 20%만 소요 - 빠름) */
+    animation-timing-function: ease-in; /* 다시 왼쪽으로 갈 때의 감속도 */
+  }
+  100% {
+    transform: translateX(0); /* 다시 원래 위치로 (전체 시간의 80% 소요 - 느림) */
+  }
 }
 
 hr {

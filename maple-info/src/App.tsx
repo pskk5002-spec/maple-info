@@ -7,6 +7,7 @@ import Starforce from './components/Starforce';
 import Cube from './components/Cube';
 import BossPettern from './components/BossPettern';
 import PartyList from './components/PartyList'
+import Crystal from './components/Crystal';
 
 function App() {
   // 전역 데이터 상태
@@ -30,52 +31,27 @@ function App() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-
-  // 날짜 계산 로직
-  const getQueryDate = () => {
-    const now = new Date();
-    const kstOffset = 9 * 60 * 60 * 1000;
-    const kstDate = new Date(now.getTime() + kstOffset);
-    const hour = kstDate.getUTCHours();
-    const daysToSubtract = hour < 2 ? 2 : 1;
-    const targetDate = new Date(kstDate.getTime() - (daysToSubtract * 24 * 60 * 60 * 1000));
-    return targetDate.getUTCFullYear() + '-' + String(targetDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(targetDate.getUTCDate()).padStart(2, '0');
-  };
-
   // 공통 검색 함수
   const searchCharacter = async (characterName: string) => {
     if (loading || lastSearchedName.current === characterName) return alert("정보를 불러올 수 없습니다.");
     setLoading(true);
-    const API_KEY = "test_f423d61cc0c4628d1aa3d764f91123979613bb1d1bd77ce6ff5e9cf3261893eaefe8d04e6d233bd35cf2fabdeb93fb0d";
-    const targetDate = getQueryDate();
-    setSelectedDate(targetDate);
 
     try {
-      const idRes = await axios.get(`/api/maplestory/v1/id?character_name=${encodeURIComponent(characterName)}`, { headers: { 'x-nxopen-api-key': API_KEY } });
-      const ocid = idRes.data.ocid;
+      const res = await axios.get('/api/character', {
+        params: {characterName}
+      });
 
-      const [basicRes, statRes, itemRes, abilityRes] = await Promise.all([
-        axios.get(`/api/maplestory/v1/character/basic?ocid=${ocid}&date=${targetDate}`, { headers: { 'x-nxopen-api-key': API_KEY } }),
-        axios.get(`/api/maplestory/v1/character/stat?ocid=${ocid}&date=${targetDate}`, { headers: { 'x-nxopen-api-key': API_KEY } }),
-        axios.get(`/api/maplestory/v1/character/item-equipment?ocid=${ocid}&date=${targetDate}`, { headers: { 'x-nxopen-api-key': API_KEY } }),
-        axios.get(`/api/maplestory/v1/character/ability?ocid=${ocid}&date=${targetDate}`, { headers: { 'x-nxopen-api-key': API_KEY } }),
-      ]);
+      const { data, date } = res.data;
 
-      const resultData = {
-        basic: basicRes.data,
-        stats: statRes.data,
-        items: itemRes.data,
-        ability: abilityRes.data,
-      };
-
-      setData(resultData);
+      setData(data);
+      setSelectedDate(date);
 
       //캐시 저장
       localStorage.setItem(
         `maple-${characterName}`,
         JSON.stringify({
-          date: targetDate,
-          data: resultData,
+          date,
+          data
         })
       );
 
@@ -112,21 +88,15 @@ function App() {
 
     if(!characterNameFromUrl) return;
 
-    //오늘 기준 요청해야 할 날짜 받기
-    const targetDate = getQueryDate();
-
     //캐시 우선 조회
     const cached = localStorage.getItem(`maple-${characterNameFromUrl}`);
 
     if(cached){
       const parsed = JSON.parse(cached);
-      
-      if(parsed.date === targetDate){
-        setSelectedDate(parsed.date);
-        setData(parsed.data);
-        lastSearchedName.current = characterNameFromUrl;
-        return;
-      }
+      setSelectedDate(parsed.date);
+      setData(parsed.data);
+      lastSearchedName.current = characterNameFromUrl;
+      return;
     }
 
     searchCharacter(characterNameFromUrl);
@@ -158,9 +128,14 @@ function App() {
         <nav className="sidebar">
           <div className="sidebar-header">
             <NavLink
-                to={`/${location.search}`}
+                to={`/`}
                 className="sidebar-logo"
-                onClick={() => window.innerWidth <= 768 && setIsSidebarOpen(false)}
+                onClick={() => {
+                  window.innerWidth <= 768 && setIsSidebarOpen(false)
+                  /* 로고 클릭시 데이터 날리고 데이터기준일 숨김 */
+                  setData(null);
+                  setSelectedDate('');
+                }}
               >
                 {isSidebarOpen ? 'MAPLE INFO' : 'M'}
               </NavLink>
@@ -185,17 +160,17 @@ function App() {
                 onClick={handleCalcMenuClick} // 클릭해도 페이지 이동 방지
                 style={{ cursor: 'default' }}
               >
-                <span>{isSidebarOpen ? '기댓값 계산기' : '📟'}</span>
+                <span>{isSidebarOpen ? '계산기' : '📟'}</span>
                 {window.innerWidth <= 768 && <span>{isSubmenuOpen ? '▲' : '▼'}</span>}
               </NavLink>
               <div className = "submenu">
                 <NavLink to = {`/calculator/starforce${location.search}`} className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>스타포스</NavLink>
                 <NavLink to = {`/calculator/cube${location.search}`} className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>큐브</NavLink>
-                <NavLink to = {`/calculator/add-option${location.search}`} className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>추가옵션</NavLink>
+                <NavLink to = {`/calculator/crystal${location.search}`} className = "submenu-item" onClick = {()=>{setIsSubmenuOpen(false); window.innerWidth <= 768 && setIsSidebarOpen(false);}}>보스 결정 정산</NavLink>
               </div>
             </div>
             <NavLink to={`/bossfettern${location.search}`} className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-              {isSidebarOpen ? '보스 패턴 공략' : '🗡️'}
+              {isSidebarOpen ? '' : '🗡️'}
             </NavLink>
             <hr />
             <NavLink to={`/partylist${location.search}`} className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
@@ -228,11 +203,14 @@ function App() {
             <Route path='/calculator/cube' element = {
               <Cube />
             }/>
+            <Route path='/calculator/crystal' element = {
+              <Crystal data = {data}/>
+            }/>
             <Route path="/bossfettern" element={
               <BossPettern />
             } />
             <Route path="/partylist" element={
-              <PartyList />
+              <PartyList data = {data}/>
             } />
           </Routes>
         </div>

@@ -2,7 +2,21 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const axios = require('axios');
 const app = express();
+
+require('dotenv').config(); // .env 파일의 환경 변수를 불러옴
+
+const PORT = process.env.PORT;
+const API_KEY = process.env.NEXON_API_KEY;
+const NEXON_API_URL = 'https://open.api.nexon.com';
+
+const nexonClient = axios.create({
+    baseURL: NEXON_API_URL,
+    headers: {
+        'x-nxopen-api-key': API_KEY
+    }
+})
 
 app.use(cors());
 app.use(express.json()); // 리액트에서 보낸 JSON 데이터를 읽기 위해 필수!
@@ -63,5 +77,59 @@ app.delete('/api/posts/:id', (req, res) => {
   });
 });
 
+  // 날짜 계산 로직
+  const getQueryDate = () => {
+    const now = new Date();
+    const kstOffset = 9 * 60 * 60 * 1000;
+    const kstDate = new Date(now.getTime() + kstOffset);
+    const hour = kstDate.getUTCHours();
+    const daysToSubtract = hour < 2 ? 2 : 1;
+    const targetDate = new Date(kstDate.getTime() - (daysToSubtract * 24 * 60 * 60 * 1000));
+    return targetDate.getUTCFullYear() + '-' + String(targetDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(targetDate.getUTCDate()).padStart(2, '0');
+  };
 
-app.listen(5000, () => console.log('서버가 5000번 포트에서 가동 중!'));
+const delay = (ms) =>
+  new Promise(resolve => setTimeout(resolve, ms));
+
+app.get('/api/character', async(req, res) => {
+    try{
+        const { characterName } = req.query;
+        const date = getQueryDate();
+
+        const idRes = await nexonClient.get(
+            `/maplestory/v1/id?character_name=${encodeURIComponent(characterName)}`
+        );
+        const ocid = idRes.data.ocid;
+        
+        const [basicRes, statRes, itemRes, abilityRes] = await Promise.all([
+            nexonClient.get(`/maplestory/v1/character/basic?ocid=${ocid}&date=${date}`),
+            nexonClient.get(`/maplestory/v1/character/stat?ocid=${ocid}&date=${date}`),
+            nexonClient.get(`/maplestory/v1/character/item-equipment?ocid=${ocid}&date=${date}`),
+            nexonClient.get(`/maplestory/v1/character/ability?ocid=${ocid}&date=${date}`),
+        ]);
+        
+        await delay(1000);
+        
+        const characterListRes = await nexonClient.get(`/maplestory/v1/character/list?ocid=${ocid}&date=${date}`);
+        
+        const resultData = {
+            basic: basicRes.data,
+            stats: statRes.data,
+            items: itemRes.data,
+            ability: abilityRes.data,
+
+        };
+
+        res.json({
+            date,
+            data: resultData,
+        });
+        
+    }catch(err){
+        console.error(err?.response?.data || err);
+        res.status(500).json({message: '캐릭터 정보 조회 실패'});
+    }
+});
+
+
+app.listen(PORT, () => console.log('서버가 5000번 포트에서 가동 중!'));
