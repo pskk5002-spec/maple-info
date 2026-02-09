@@ -25,15 +25,12 @@ function App() {
   // URL
   const location = useLocation();
 
-  const lastSearchedName = useRef<string>('');
-
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
   // 공통 검색 함수
   const searchCharacter = async (characterName: string) => {
-    if (loading || lastSearchedName.current === characterName) return alert("정보를 불러올 수 없습니다.");
     setLoading(true);
 
     try {
@@ -55,7 +52,6 @@ function App() {
         })
       );
 
-      lastSearchedName.current = characterName;
     } catch (e: any) {
       console.error(e);
       if (e.response?.status === 429) {
@@ -95,7 +91,6 @@ function App() {
       const parsed = JSON.parse(cached);
       setSelectedDate(parsed.date);
       setData(parsed.data);
-      lastSearchedName.current = characterNameFromUrl;
       return;
     }
 
@@ -135,7 +130,13 @@ function App() {
                   /* 로고 클릭시 데이터 날리고 데이터기준일 숨김 */
                   setData(null);
                   setSelectedDate('');
-                  localStorage.clear();
+
+                  //테마는 그대로 유지하고 검색 기록 캐시만 전부 초기화
+                  Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('maple-')) {
+                      localStorage.removeItem(key);
+                    }
+                  });
                 }}
               >
                 {isSidebarOpen ? 'MAPLE INFO' : 'M'}
@@ -205,7 +206,7 @@ function App() {
               <Cube />
             }/>
             <Route path='/calculator/crystal' element = {
-              <Crystal data = {data}/>
+              <Crystal key={data?.basic?.character_name} />
             }/>
             <Route path="/bossfettern" element={
               <BossPettern />

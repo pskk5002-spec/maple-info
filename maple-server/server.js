@@ -91,33 +91,6 @@ app.delete('/api/posts/:id', (req, res) => {
 const delay = (ms) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
-//단일 캐릭터의 basic
-const getSingleCharBasic = async (characterName) => {
-    try{
-        const date = getQueryDate();
-
-        const idRes = await nexonClient.get(
-            `/maplestory/v1/id?character_name=${encodeURIComponent(characterName)}`
-        );
-        const ocid = idRes.data.ocid;
-        
-        const basicRes = nexonClient.get(`/maplestory/v1/character/basic?ocid=${ocid}&date=${date}`);
-        
-        const resultData = {
-            basic: basicRes.data,
-        };
-
-        res.json({
-            date,
-            data: resultData,
-        });
-        
-    }catch(err){
-        console.error(err?.response?.data || err);
-        res.status(500).json({message: '캐릭터 정보 조회 실패'});
-    }
-};
-
 
 //단일 캐릭터
 app.get('/api/character', async(req, res) => {
@@ -136,10 +109,6 @@ app.get('/api/character', async(req, res) => {
             nexonClient.get(`/maplestory/v1/character/item-equipment?ocid=${ocid}&date=${date}`),
             nexonClient.get(`/maplestory/v1/character/ability?ocid=${ocid}&date=${date}`),
         ]);
-        
-        await delay(1000);
-        
-        const characterListRes = await nexonClient.get(`/maplestory/v1/character/list?ocid=${ocid}&date=${date}`);
 
         await delay(200);
         
@@ -148,7 +117,6 @@ app.get('/api/character', async(req, res) => {
             stats: statRes.data,
             items: itemRes.data,
             ability: abilityRes.data,
-            list: characterListRes.data,
         };
 
         res.json({
@@ -162,40 +130,6 @@ app.get('/api/character', async(req, res) => {
     }
 });
 
-//여러 캐릭터
-app.get('/api/characters', async(req, res) => {
-    try{
-        const { characterNames } = req.body; //배열 형태로 이름을 받음
-        const date = getQueryDate();
-
-        if(!Array.isArray(characterNames) || characterNames.length === 0){
-            return res.status(400).json({meszsage: '캐릭터 이름 배열이 필요합니다.'});
-        }
-
-        //최대 8개까지만 처리하도록 (보험용)
-        const limitedNames = characterNames.slice(0, 8);
-
-        const results = await Promise.allSettled(
-            limitedNames.map(name => getSingleCharBasic(name))
-        );
-
-        //결과 정리
-        const responseData = results.map((result, index) => {
-            if(result.status === 'fulfilled'){
-                return result.value;
-            }else{
-                return { name: limitedNames[index], error: '정보 조회 실패'};
-            }
-        });
-
-        //결과 전송
-        res.json(responseData);
-        
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message: '서버 내부 오류'});
-    }
-});
 
 
 app.listen(PORT, () => console.log('서버가 5000번 포트에서 가동 중!'));
