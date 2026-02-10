@@ -77,16 +77,6 @@ app.delete('/api/posts/:id', (req, res) => {
   });
 });
 
-  // 날짜 계산 로직
-  const getQueryDate = () => {
-    const now = new Date();
-    const kstOffset = 9 * 60 * 60 * 1000;
-    const kstDate = new Date(now.getTime() + kstOffset);
-    const hour = kstDate.getUTCHours();
-    const daysToSubtract = hour < 2 ? 2 : 1;
-    const targetDate = new Date(kstDate.getTime() - (daysToSubtract * 24 * 60 * 60 * 1000));
-    return targetDate.getUTCFullYear() + '-' + String(targetDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(targetDate.getUTCDate()).padStart(2, '0');
-  };
 
 const delay = (ms) =>
   new Promise(resolve => setTimeout(resolve, ms));
@@ -96,7 +86,6 @@ const delay = (ms) =>
 app.get('/api/character', async(req, res) => {
     try{
         const { characterName } = req.query;
-        const date = getQueryDate();
 
         const idRes = await nexonClient.get(
             `/maplestory/v1/id?character_name=${encodeURIComponent(characterName)}`
@@ -104,10 +93,10 @@ app.get('/api/character', async(req, res) => {
         const ocid = idRes.data.ocid;
         
         const [basicRes, statRes, itemRes, abilityRes] = await Promise.all([
-            nexonClient.get(`/maplestory/v1/character/basic?ocid=${ocid}&date=${date}`),
-            nexonClient.get(`/maplestory/v1/character/stat?ocid=${ocid}&date=${date}`),
-            nexonClient.get(`/maplestory/v1/character/item-equipment?ocid=${ocid}&date=${date}`),
-            nexonClient.get(`/maplestory/v1/character/ability?ocid=${ocid}&date=${date}`),
+            nexonClient.get(`/maplestory/v1/character/basic?ocid=${ocid}`),
+            nexonClient.get(`/maplestory/v1/character/stat?ocid=${ocid}`),
+            nexonClient.get(`/maplestory/v1/character/item-equipment?ocid=${ocid}`),
+            nexonClient.get(`/maplestory/v1/character/ability?ocid=${ocid}`),
         ]);
 
         await delay(200);

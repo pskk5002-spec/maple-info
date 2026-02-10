@@ -5,7 +5,7 @@ import Stats from '../components/Stats.tsx';
 import { useNavigate } from 'react-router-dom';
 
 // Props 타입 정의 (App에서 받아올 항목들)
-function CharacterSearchPage({ data, loading, selectedDate }: any) {
+function CharacterSearchPage({ data, loading }: any) {
   const [characterName, setCharacterName] = useState('');
   const navigate = useNavigate();
 
@@ -40,8 +40,8 @@ function CharacterSearchPage({ data, loading, selectedDate }: any) {
           {loading ? '검색 중...' : '검색'}
         </button>
         
-        {selectedDate && (
-            <span className="info-date">데이터 기준일: {selectedDate}</span>
+        {data && (
+            <span className="info-date">데이터 기준일: 실시간</span>
         )}
       </div>
 

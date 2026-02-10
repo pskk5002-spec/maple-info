@@ -13,7 +13,6 @@ function App() {
   // 전역 데이터 상태
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
   // 테마 (다크 OR 라이트 모드)
@@ -41,7 +40,6 @@ function App() {
       const { data, date } = res.data;
 
       setData(data);
-      setSelectedDate(date);
 
       //캐시 저장
       localStorage.setItem(
@@ -58,7 +56,6 @@ function App() {
         const cached = localStorage.getItem(`maple-${characterName}`);
         if (cached) {
           const parsed = JSON.parse(cached);
-          setSelectedDate(parsed.date);
           setData(parsed.data);
           alert("API 호출 제한으로 저장된 데이터를 표시합니다.");
           return;
@@ -89,7 +86,6 @@ function App() {
 
     if(cached){
       const parsed = JSON.parse(cached);
-      setSelectedDate(parsed.date);
       setData(parsed.data);
       return;
     }
@@ -129,7 +125,6 @@ function App() {
                   window.innerWidth <= 768 && setIsSidebarOpen(false)
                   /* 로고 클릭시 데이터 날리고 데이터기준일 숨김 */
                   setData(null);
-                  setSelectedDate('');
 
                   //테마는 그대로 유지하고 검색 기록 캐시만 전부 초기화
                   Object.keys(localStorage).forEach(key => {
@@ -196,7 +191,6 @@ function App() {
               <CharacterSearchPage 
                 data={data} 
                 loading={loading} 
-                selectedDate={selectedDate} 
               />
             } />
             <Route path="/calculator/starforce" element={

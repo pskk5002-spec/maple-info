@@ -20,6 +20,9 @@ interface Raider {
 //최대 선택할 수 있는 캐릭터
 const MAX_CHARS = 8;
 
+//캐릭터당 최대 선택할 수 있는 보스 수
+const MAX_BOSSES_PER_CHAR = 12;
+
 //직업 리스트
 const CLASS_LIST = [
     "히어로", "팔라딘", "다크나이트", "소울마스터", "미하일", "블래스터",
@@ -144,6 +147,12 @@ const CrystalList = () => {
             return;
         }
 
+        // 최대 보스 수 체크
+        if (selectedChars[activeCharIndex].bosses.length >= MAX_BOSSES_PER_CHAR) {
+            alert(`캐릭터당 최대 ${MAX_BOSSES_PER_CHAR}개의 보스까지 선택할 수 있습니다.`);
+            return;
+        }
+
         const diff = selectedDiff[bossName];
         if (!diff) {
             alert('난이도를 선택해주세요');
@@ -233,7 +242,7 @@ const CrystalList = () => {
             {/* 전체 계정 합계 */}
             {selectedChars.length > 0 && (
                 <div className='total-account-display'>
-                    <strong>전체 합계:</strong> {formatMeso(totalAccount)} 메소
+                    {formatMeso(totalAccount)} 메소
                 </div>
             )}
 
@@ -297,6 +306,9 @@ const CrystalList = () => {
                         <h3 className='mode-title'>
                             {selectedChars[activeCharIndex].character_class} (Lv.{selectedChars[activeCharIndex].character_level}) - 보스 선택
                         </h3>
+                        <div className='mode-title' style={{fontSize: '14px', marginTop: '5px'}}>
+                            선택된 보스: {selectedChars[activeCharIndex].bosses.length}/{MAX_BOSSES_PER_CHAR}
+                        </div>
                         <br />
                         
                         <div className="boss-grid">

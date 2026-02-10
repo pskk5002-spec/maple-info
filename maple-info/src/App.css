@@ -70,7 +70,7 @@ body {
 
 body {
   font-family: 'Pretendard', sans-serif;
-  background-color: #f8f9fa;
+  background-color: var(--background);
 }
 
 .main-container {
